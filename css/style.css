@@ -1,0 +1,333 @@
+:root {
+    --neon-purple: #bc13fe;
+    --neon-teal: #00f3ff;
+    --neon-pink: #ff00ff;
+    --dark-bg: #0a0a0f;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #0f0f1f 100%);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--neon-purple);
+    box-shadow: 0 0 30px rgba(188, 19, 254, 0.3);
+    position: relative;
+    z-index: 2;
+    animation: containerGlow 2s infinite alternate;
+}
+
+@keyframes containerGlow {
+    from {
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+    }
+    to {
+        box-shadow: 0 0 40px rgba(188, 19, 254, 0.6),
+                    0 0 60px rgba(0, 243, 255, 0.3);
+    }
+}
+
+h1 {
+    color: var(--neon-purple);
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+    animation: titleFlicker 1.5s infinite alternate;
+}
+
+@keyframes titleFlicker {
+    0% { text-shadow: 0 0 15px rgba(188, 19, 254, 0.5); }
+    50% { text-shadow: 0 0 25px var(--neon-purple), 0 0 35px var(--neon-teal); }
+    100% { text-shadow: 0 0 15px rgba(188, 19, 254, 0.8); }
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+    margin: 20px auto;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--neon-teal);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.cell.winning-cell {
+    animation: cellWin 1s infinite alternate;
+    transform-origin: center;
+}
+.cell:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--neon-teal);
+}
+
+.cell.x {
+    color: var(--neon-purple);
+    text-shadow: 0 0 20px var(--neon-purple);
+    animation: xPulse 1s infinite;
+}
+
+.cell.o {
+    color: var(--neon-teal);
+    text-shadow: 0 0 20px var(--neon-teal);
+    animation: oPulse 1s infinite;
+}
+
+
+@keyframes xPulse {
+    0%, 100% { text-shadow: 0 0 20px var(--neon-purple); }
+    50% { text-shadow: 0 0 40px var(--neon-purple), 0 0 60px var(--neon-purple); }
+}
+
+@keyframes oPulse {
+    0%, 100% { text-shadow: 0 0 20px var(--neon-teal); }
+    50% { text-shadow: 0 0 40px var(--neon-teal), 0 0 60px var(--neon-teal); }
+}
+
+.buttons {
+    margin-top: 30px;
+    position: relative;
+    z-index: 3;
+}
+
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-teal));
+    color: white;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        transparent 20%,
+        rgba(255,255,255,0.2) 50%,
+        transparent 80%);
+    animation: buttonShine 3s infinite linear;
+}
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px var(--neon-purple);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+/* Background animation */
+body::before {
+    content: '';
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    background: radial-gradient(circle, 
+        rgba(188, 19, 254, 0.1) 0%, 
+        transparent 70%);
+    animation: moveBackground 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes moveBackground {
+    from { transform: translate(0, 0); }
+    25% { transform: translate(-50%, 50%); }
+    50% { transform: translate(-75%, 0); }
+    75% { transform: translate(-50%, -50%); }
+    to { transform: translate(0, 0); }
+}
+.winner-text {
+    animation: winnerGlow 1s infinite alternate;
+    font-size: 2.5em !important;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-teal)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    padding: 10px 30px !important;
+    border-radius: 15px !important;
+}
+@keyframes winnerGlow {
+    0% {
+        text-shadow: 0 0 10px var(--neon-purple),
+                     0 0 20px var(--neon-teal);
+    }
+    100% {
+        text-shadow: 0 0 20px var(--neon-purple),
+                     0 0 40px var(--neon-teal),
+                     0 0 60px var(--neon-teal);
+    }
+}
+.winning-combo {
+    animation: comboGlow 1.5s infinite ease-in-out;
+    position: relative;
+    background-color: aliceblue;
+}
+@keyframes comboGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px var(--neon-purple),
+                    inset 0 0 15px var(--neon-purple);
+    }
+    50% {
+        box-shadow: 0 0 40px var(--neon-purple),
+                    inset 0 0 30px var(--neon-purple);
+    }
+}
+.winning-combo::after {
+    content: '';
+    position: absolute;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-teal));
+    height: 4px;
+    width: 100%;
+    animation: lineFlow 1.5s infinite;
+    border-radius: 2px;
+}
+@keyframes lineFlow {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.status {
+    font-size: 1.8em !important;
+    padding: 15px 30px !important;
+    transition: all 0.5s ease;
+}
+
+@keyframes cellWin {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1) rotate(5deg); }
+}
+/* Add floating particles */
+.neon-particle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: var(--neon-purple);
+    border-radius: 50%;
+    animation: float 20s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100vw);
+        opacity: 0;
+    }
+}
+#winner {
+    color: #fff; /* Change text color to white */
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8); /* Glowing effect */
+}
+/* Winning line animation */
+.winning-line {
+    position: fixed;
+    height: 4px;
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-teal));
+    transform-origin: 0 50%;
+    animation: lineGrow 1s ease-out;
+    z-index: 999;
+}
+
+@keyframes lineGrow {
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+}
+
+/* Scoreboard */
+.scoreboard {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+/* Difficulty selector */
+.difficulty {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
