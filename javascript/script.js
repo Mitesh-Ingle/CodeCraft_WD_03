@@ -1,81 +1,113 @@
-let board = ['', '', '', '', '', '', '', '', ''];
-let currentPlayer = 'X';
-let gameActive = true;
+let board = ["", "", "", "", "", "", "", "", ""];
+let currentPlayer = "X";
+let gameMode = "friend"; // Default mode is Play with Friend
+let gameOver = false;
 
-function createBoard() {
-    const boardContainer = document.getElementById('board');
-    boardContainer.innerHTML = '';
-    board.forEach((value, index) => {
-        const cell = document.createElement('div');
-        cell.classList.add('cell');
-        cell.innerText = value;
-        cell.addEventListener('click', () => makeMove(index));
-        boardContainer.appendChild(cell);
-    });
-}
-
-function makeMove(index) {
-    if (board[index] === '' && gameActive) {
-        board[index] = currentPlayer;
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        checkWinner();
-        createBoard();
-    }
+function setMode(mode) {
+    gameMode = mode;
+    document.getElementById("difficulty").disabled = mode === "friend";
+    resetGame();
 }
 
 function checkWinner() {
-    const winPatterns = [
+    const winningCombos = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8],
         [0, 3, 6], [1, 4, 7], [2, 5, 8],
         [0, 4, 8], [2, 4, 6]
     ];
-    
-    for (const pattern of winPatterns) {
-        const [a, b, c] = pattern;
+    for (const combo of winningCombos) {
+        const [a, b, c] = combo;
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            document.getElementById('winner').innerText = `Winner: ${board[a]}`;
-            gameActive = false;
+            document.getElementById("status").textContent = `Player ${board[a]} wins!`;
+            gameOver = true;
             return;
         }
     }
-    if (!board.includes('')) {
-        document.getElementById('winner').innerText = 'Draw!';
-        gameActive = false;
+    if (!board.includes("")) {
+        document.getElementById("status").textContent = "It's a draw!";
+        gameOver = true;
     }
 }
 
-function resetBoard() {
-    board = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    document.getElementById('winner').innerText = '';
-    createBoard();
+function makeMove(index) {
+    if (board[index] === "" && !gameOver) {
+        board[index] = currentPlayer;
+        document.getElementsByClassName("cell")[index].textContent = currentPlayer;
+        checkWinner();
+
+        if (!gameOver) {
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            document.getElementById("status").textContent = `Player ${currentPlayer}'s Turn`;
+
+            if (gameMode === "ai" && currentPlayer === "O") {
+                setTimeout(aiMove, 500);
+            }
+        }
+    }
+}
+
+function aiMove() {
+    let difficulty = document.getElementById("difficulty").value;
+    let emptyCells = board.map((val, index) => val === "" ? index : null).filter(val => val !== null);
+
+    if (emptyCells.length > 0) {
+        let move;
+        if (difficulty === "easy") {
+            move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        } else if (difficulty === "medium") {
+            move = findBestMove(0.5);
+        } else {
+            move = findBestMove(1);
+        }
+        board[move] = "O";
+        document.getElementsByClassName("cell")[move].textContent = "O";
+        checkWinner();
+
+        if (!gameOver) {
+            currentPlayer = "X";
+            document.getElementById("status").textContent = "Player X's Turn";
+        }
+    }
+}
+
+function findBestMove(aggressiveness) {
+    let emptyCells = board.map((val, index) => val === "" ? index : null).filter(val => val !== null);
+    for (let cell of emptyCells) {
+        let testBoard = [...board];
+        testBoard[cell] = "O";
+        if (checkPotentialWin(testBoard, "O")) return cell;
+    }
+    if (Math.random() > aggressiveness) {
+        return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    }
+    for (let cell of emptyCells) {
+        let testBoard = [...board];
+        testBoard[cell] = "X";
+        if (checkPotentialWin(testBoard, "X")) return cell;
+    }
+    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+}
+
+function checkPotentialWin(testBoard, player) {
+    const winningCombos = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
+    return winningCombos.some(combo => {
+        const [a, b, c] = combo;
+        return testBoard[a] === player && testBoard[b] === player && testBoard[c] === player;
+    });
+}
+
+function resetGame() {
+    board = ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = "X";
+    gameOver = false;
+    document.getElementById("status").textContent = "Player X's Turn";
+    document.querySelectorAll(".cell").forEach(cell => cell.textContent = "");
 }
 
 function newGame() {
-    resetBoard();
-    currentPlayer = 'X';
-}
-
-createBoard();
-function checkWin() {
-    return winningCombinations.some(combination => {
-        if (combination.every(index => gameState[index] === currentPlayer)) {
-            setTimeout(() => {
-                combination.forEach(index => {
-                    cells[index].classList.add('winning-combo');
-                });
-            }, 100);
-            highlightWinner(currentPlayer);
-            return true;
-        }
-        return false;
-    });
-}
-function resetGame() {
-    // ... existing code ...
-    status.classList.remove('winner-text');
-    document.querySelectorAll('.winning-combo').forEach(cell => {
-        cell.classList.remove('winning-combo');
-    });
-    document.querySelectorAll('.neon-particle').forEach(p => p.remove());
+    setMode(gameMode);
 }

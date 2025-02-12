@@ -1,28 +1,42 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
+    <title>Tic-Tac-Toe</title>
     <link rel="stylesheet" href="/Web Development Task 3 tik tak toe/css/style.css">
 </head>
 <body>
-    <!-- <div class="difficulty">
-        <select id="difficulty">
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
-        <button onclick="toggleMode()">VS Computer</button>
-      </div> -->
-    <div class="container">
-        <h1>✨  Tic Tac Toe ✨</h1>
-        <div class="board" id="board"></div>
-        <p id="winner"></p>
-        <div class="buttons">
-            <button class="reset" onclick="resetBoard()">🔄 Reset</button>
-            <button class="new-game" onclick="newGame()">🎮 New Game</button>
-        </div>
+    <h1>Tic-Tac-Toe</h1>
+
+    <div>
+        <button onclick="setMode('friend')">Play with Friend</button>
+        <button onclick="setMode('ai')">Play with AI</button>
     </div>
+<br>
+    <label for="difficulty">Select Difficulty:</label>
+    <select id="difficulty" disabled>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+
+    <div class="board">
+        <div class="cell" onclick="makeMove(0)"></div>
+        <div class="cell" onclick="makeMove(1)"></div>
+        <div class="cell" onclick="makeMove(2)"></div>
+        <div class="cell" onclick="makeMove(3)"></div>
+        <div class="cell" onclick="makeMove(4)"></div>
+        <div class="cell" onclick="makeMove(5)"></div>
+        <div class="cell" onclick="makeMove(6)"></div>
+        <div class="cell" onclick="makeMove(7)"></div>
+        <div class="cell" onclick="makeMove(8)"></div>
+    </div>
+
+    <p id="status">Player X's Turn</p>
+    <button onclick="resetGame()">Restart Game</button>
+    <button onclick="newGame()">New Game</button>
+
     <script src="/Web Development Task 3 tik tak toe/javascript/script.js"></script>
 </body>
 </html>
